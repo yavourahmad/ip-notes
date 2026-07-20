@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Code Verification System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #e8edf2;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .top-bar {
+            background: #1a4d7a;
+            color: white;
+            padding: 12px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .top-bar h1 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid #d4dce4;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: #f7f9fb;
+            border-bottom: 1px solid #d4dce4;
+            padding: 16px 24px;
+        }
+
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-body {
+            padding: 30px 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            font-size: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1a4d7a;
+            box-shadow: 0 0 0 3px rgba(26, 77, 122, 0.1);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #1a4d7a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #164063;
+        }
+
+        .btn-primary:active {
+            background: #123251;
+        }
+
+        .btn-secondary {
+            background: #f7f9fb;
+            color: #34495e;
+            border: 1px solid #cbd5e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e8edf2;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .info-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a4d7a;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1a4d7a;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table tr {
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table td {
+            padding: 14px 0;
+            font-size: 14px;
+            vertical-align: top;
+        }
+
+        .info-table td:first-child {
+            color: #5a6c7d;
+            font-weight: 600;
+            width: 200px;
+        }
+
+        .info-table td:last-child {
+            color: #2c3e50;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-left: 4px solid #e74c3c;
+            background: #fef5f5;
+            color: #c0392b;
+            font-size: 14px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.warning {
+            border-left-color: #f39c12;
+            background: #fef9f5;
+            color: #d68910;
+        }
+
+        .alert.success {
+            border-left-color: #27ae60;
+            background: #f0f9f4;
+            color: #1e8449;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .action-buttons {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e8edf2;
+        }
+
+        .code-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .code-list li {
+            padding: 10px 14px;
+            background: #f7f9fb;
+            border: 1px solid #e8edf2;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .code-list li strong {
+            color: #1a4d7a;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .verification-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+
+        .history-table th {
+            background: #f7f9fb;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c3e50;
+            border: 1px solid #e8edf2;
+        }
+
+        .history-table td {
+            padding: 10px;
+            border: 1px solid #e8edf2;
+            font-size: 13px;
+        }
+
+        .history-table input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #cbd5e0;
+            font-size: 13px;
+        }
+
+        .history-table input:focus {
+            outline: none;
+            border-color: #1a4d7a;
+        }
+
+        .btn-small {
+            padding: 6px 14px;
+            font-size: 13px;
+        }
+
+        .approval-status {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .approval-status.approved {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .approval-status.denied {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .conflict-list {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        .conflict-list h4 {
+            color: #856404;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .conflict-list ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .conflict-list li {
+            color: #856404;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .rule-card {
+            background: #f7f9fb;
+            border-left: 4px solid #1a4d7a;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .rule-card.error {
+            border-left-color: #e74c3c;
+            background: #fef5f5;
+        }
+
+        .rule-card.warning {
+            border-left-color: #f39c12;
+            background: #fef9f5;
+        }
+
+        .rule-card.success {
+            border-left-color: #27ae60;
+            background: #f0f9f4;
+        }
+
+        .rule-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .rule-description {
+            font-size: 13px;
+            color: #5a6c7d;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 15px;
+            }
+
+            .info-table td:first-child {
+                width: 140px;
+            }
+
+            .form-input {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Dental Code Verification System</h1>
+    </div>
+
+    <div class="main-container">
+        <!-- Input Section -->
+        <div class="content-card" id="inputSection">
+            <div class="card-header">
+                <h2>Code Verification</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label" for="codeInput">Enter Dental Procedure Code</label>
+                    <input
+                        type="text"
+                        class="form-input"
+                        id="codeInput"
+                        placeholder="Enter code (e.g., D6058, D2740, D6010)"
+                        onkeypress="if(event.key === 'Enter') verifyCode()"
+                    >
+                </div>
+                <button class="btn btn-primary" onclick="verifyCode()">Verify Code</button>
+                <div class="alert" id="alertMessage">
+                    Please enter a valid code
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient History Section -->
+        <div class="content-card" id="historySection">
+            <div class="card-header">
+                <h2>Patient History</h2>
+            </div>
+            <div class="card-body">
+                <p style="font-size: 14px; color: #5a6c7d; margin-bottom: 16px;">Enter any procedures that have already been performed on the same tooth.</p>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Code</th>
+                            <th style="width: 25%;">Date</th>
+                            <th style="width: 45%;">Description</th>
+                            <th style="width: 10%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                    </tbody>
+                </table>
+                <button class="btn btn-secondary btn-small" onclick="addHistoryEntry()">+ Add History Entry</button>
+                <button class="btn btn-secondary btn-small" onclick="clearHistory()" style="margin-left: 8px;">Clear All</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="dashboard" id="dashboardSection">
+            <!-- Approval Status -->
+            <div id="approvalStatusSection"></div>
+
+            <!-- Basic Info -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Code Information</h2>
+                </div>
+                <div class="card-body">
+                    <table class="info-table">
+                        <tr>
+                            <td>Code</td>
+                            <td><strong id="displayCode">-</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td id="displayDescription">-</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td id="displayCategory">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Required History -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Required Prior Procedures</h2>
+                </div>
+                <div class="card-body">
+                    <div id="requiredHistory"></div>
+                </div>
+            </div>
+
+            <!-- Must Be Done Together -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Codes That Must Be Done Together</h2>
+                </div>
+                <div class="card-body">
+                    <div id="mustBeTogether"></div>
+                </div>
+            </div>
+
+            <!-- Cannot Be Done Together -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Codes That Cannot Be Done Together</h2>
+                </div>
+                <div class="card-body">
+                    <div id="cannotBeTogether"></div>
+                </div>
+            </div>
+
+            <!-- Next Possible Procedures -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Next Possible Procedures</h2>
+                </div>
+                <div class="card-body">
+                    <div id="nextProcedures"></div>
+                </div>
+            </div>
+
+            <!-- Clinical Guidelines -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2>Clinical Guidelines & Notes</h2>
+                </div>
+                <div class="card-body">
+                    <div id="clinicalGuidelines"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="resetSearch()">New Verification</button>
+            </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div style="background:#fff3cd; border-left:4px solid #ffc107; padding:16px 20px; margin-top:24px; font-size:13px; color:#856404; line-height:1.6;">
+            <strong>⚠ Disclaimer:</strong> This tool is <u>not</u> developed, endorsed, or affiliated with UnitedHealthcare (UHC) or any insurance payer.
+            The rules and guidelines used in this tool are based on the American Dental Association (ADA) Current Dental Terminology (CDT) coding standards and general clinical coding conventions.
+            This tool is intended as an internal reference aid only and does not guarantee claim approval or coverage by any insurance carrier.
+            If a claim is denied, please <strong>check the reason for denial with your supervisor first</strong> before submitting an appeal.
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive Dental Code Rules Database
+        const dentalCodeRules = {
+            // Implant Crown
+            'D6058': {
+                description: 'Abutment supported crown - porcelain/ceramic',
+                category: 'Implant Services',
+                requiredHistory: [
+                    { code: 'D6010', description: 'Surgical placement of implant body', timeframe: 'Must be at least 3-6 months prior', critical: true },
+                    { code: 'D6056', description: 'Prefabricated abutment', timeframe: 'Must be same day or prior', critical: true }
+                ],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D6010', reason: 'Cannot place crown same day as implant placement - requires osseointegration period (3-6 months)' },
+                    { code: 'D2740', reason: 'Cannot do implant crown and natural tooth crown on same tooth' },
+                    { code: 'D7140', reason: 'Cannot extract and place implant crown on same tooth same day' }
+                ],
+                nextProcedures: [
+                    { code: 'D6080', description: 'Implant maintenance procedures', timeframe: 'Regular maintenance after crown placement' }
+                ],
+                clinicalGuidelines: [
+                    'Implant must be fully integrated (3-6 months healing time)',
+                    'Radiographic verification of osseointegration required',
+                    'Abutment must be placed before or same day as crown',
+                    'Cannot bill crown without documented implant placement history',
+                    'Most insurance requires pre-authorization with implant placement records'
+                ]
+            },
+
+            // Implant Placement
+            'D6010': {
+                description: 'Surgical placement of implant body - endosteal implant',
+                category: 'Implant Services',
+                requiredHistory: [
+                    { code: 'D7140/D7210', description: 'Extraction (if replacing extracted tooth)', timeframe: 'Varies - immediate or 3-6 months healing', critical: false }
+                ],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D6058', reason: 'Cannot place crown same day - requires 3-6 months osseointegration' },
+                    { code: 'D6056', reason: 'Abutment placement typically done after healing period, not same day' }
+                ],
+                nextProcedures: [
+                    { code: 'D6056', description: 'Prefabricated abutment', timeframe: '3-6 months after implant placement' },
+                    { code: 'D6058', description: 'Abutment supported crown', timeframe: 'After abutment placement' }
+                ],
+                clinicalGuidelines: [
+                    'Requires adequate bone density and volume',
+                    'CT scan or radiographs required for planning',
+                    'Must document site preparation and implant specifications',
+                    'Cannot place abutment or crown until osseointegration complete (3-6 months)',
+                    'Some cases allow immediate abutment but not crown'
+                ]
+            },
+
+            // Crown - Natural Tooth
+            'D2740': {
+                description: 'Crown - porcelain/ceramic substrate',
+                category: 'Restorative',
+                requiredHistory: [],
+                mustBeTogether: [
+                    { code: 'D2950', description: 'Core buildup', reason: 'Required if tooth has insufficient structure', conditional: true }
+                ],
+                cannotBeTogether: [
+                    { code: 'D6058', reason: 'Cannot do implant crown and natural crown on same tooth' },
+                    { code: 'D7140', reason: 'Cannot extract tooth and crown it same day' },
+                    { code: 'D2740', reason: 'Cannot do two crowns on same tooth (duplicate billing)', sameToothOnly: true }
+                ],
+                nextProcedures: [
+                    { code: 'D2950', description: 'Core buildup (if needed before crown)', timeframe: 'Same appointment or prior' }
+                ],
+                clinicalGuidelines: [
+                    'Crown and buildup (D2950) must be done together when tooth structure is insufficient',
+                    'Cannot bill two crowns on same tooth',
+                    'Most insurance covers one crown per tooth every 5 years',
+                    'Requires documentation of tooth damage/decay justifying crown',
+                    'Pre-authorization often required for insurance coverage'
+                ]
+            },
+
+            // Core Buildup
+            'D2950': {
+                description: 'Core buildup, including any pins',
+                category: 'Restorative',
+                requiredHistory: [],
+                mustBeTogether: [
+                    { code: 'D2740', description: 'Crown', reason: 'Buildup is preparation for crown placement', conditional: false }
+                ],
+                cannotBeTogether: [],
+                nextProcedures: [
+                    { code: 'D2740', description: 'Crown placement', timeframe: 'Same appointment or follow-up' }
+                ],
+                clinicalGuidelines: [
+                    'Core buildup must be followed by crown placement',
+                    'Cannot bill buildup without crown',
+                    'Buildup and crown are typically done same day or crown follows',
+                    'Insurance requires crown to be billed with buildup',
+                    'Used when tooth has insufficient structure to retain crown alone'
+                ]
+            },
+
+            // Root Canal - Molar
+            'D3330': {
+                description: 'Endodontic therapy, molar tooth',
+                category: 'Endodontics',
+                requiredHistory: [],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D7140', reason: 'Cannot extract tooth and do root canal on same tooth - contradictory treatments' }
+                ],
+                nextProcedures: [
+                    { code: 'D2950', description: 'Core buildup', timeframe: 'After root canal completion' },
+                    { code: 'D2740', description: 'Crown', timeframe: 'After root canal - usually required for molar' }
+                ],
+                clinicalGuidelines: [
+                    'Molar root canal almost always requires crown after completion',
+                    'Cannot extract and root canal same tooth',
+                    'May require multiple appointments',
+                    'Post-op radiograph required',
+                    'Crown typically recommended within 1-2 months after root canal'
+                ]
+            },
+
+            // Extraction - Simple
+            'D7140': {
+                description: 'Extraction, erupted tooth or exposed root',
+                category: 'Oral Surgery',
+                requiredHistory: [],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D2740', reason: 'Cannot crown a tooth being extracted' },
+                    { code: 'D3330', reason: 'Cannot root canal a tooth being extracted' },
+                    { code: 'D6058', reason: 'Cannot place implant crown same day as extraction' }
+                ],
+                nextProcedures: [
+                    { code: 'D6010', description: 'Implant placement', timeframe: 'Immediate or 3-6 months after extraction' },
+                    { code: 'D5110', description: 'Complete denture', timeframe: 'After healing period' },
+                    { code: 'D5213', description: 'Partial denture', timeframe: 'After healing period' }
+                ],
+                clinicalGuidelines: [
+                    'Cannot restore tooth being extracted',
+                    'Healing period typically 3-6 months before implant',
+                    'Immediate implant placement possible in some cases',
+                    'Document reason for extraction',
+                    'Cannot bill restorative work on extracted tooth'
+                ]
+            },
+
+            // Scaling and Root Planing
+            'D4341': {
+                description: 'Periodontal scaling and root planing - four or more teeth per quadrant',
+                category: 'Periodontics',
+                requiredHistory: [
+                    { code: 'D0180', description: 'Comprehensive periodontal evaluation', timeframe: 'Within 6 months', critical: true }
+                ],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D1110', reason: 'Cannot do prophylaxis (cleaning) and SRP same day - different treatment levels' }
+                ],
+                nextProcedures: [
+                    { code: 'D4910', description: 'Periodontal maintenance', timeframe: '3 months after completion' }
+                ],
+                clinicalGuidelines: [
+                    'Requires documented periodontal disease (pocket depths >4mm)',
+                    'Cannot bill with prophylaxis on same day',
+                    'Typically done by quadrant',
+                    'Requires periodontal charting documentation',
+                    'Follow-up maintenance every 3 months'
+                ]
+            },
+
+            // Prophylaxis - Adult Cleaning
+            'D1110': {
+                description: 'Prophylaxis - adult',
+                category: 'Preventive',
+                requiredHistory: [],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D4341', reason: 'Cannot bill prophylaxis with scaling/root planing - different treatment levels' },
+                    { code: 'D4910', reason: 'Cannot bill prophylaxis with periodontal maintenance same day' }
+                ],
+                nextProcedures: [],
+                clinicalGuidelines: [
+                    'For patients without periodontal disease',
+                    'Typically covered twice per year by insurance',
+                    'Cannot bill with periodontal procedures same day',
+                    'Standard preventive cleaning for healthy patients'
+                ]
+            },
+
+            // Denture - Complete Upper
+            'D5110': {
+                description: 'Complete denture - upper',
+                category: 'Prosthodontics',
+                requiredHistory: [
+                    { code: 'D7140', description: 'Extractions (if teeth present)', timeframe: '3-6 months healing recommended', critical: false }
+                ],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D5110', reason: 'Cannot bill two complete upper dentures same day (duplicate)', sameArchOnly: true }
+                ],
+                nextProcedures: [
+                    { code: 'D5120', description: 'Complete denture - lower', timeframe: 'Same treatment plan' },
+                    { code: 'D5731', description: 'Denture reline', timeframe: '6-12 months after placement' }
+                ],
+                clinicalGuidelines: [
+                    'Requires all upper teeth to be missing',
+                    'If teeth present, extractions must precede',
+                    'Immediate dentures possible but require different code (D5130)',
+                    'Multiple appointments for impressions, try-in, delivery',
+                    'Reline often needed 6-12 months after placement'
+                ]
+            },
+
+            // Abutment - Implant
+            'D6056': {
+                description: 'Prefabricated abutment - includes placement',
+                category: 'Implant Services',
+                requiredHistory: [
+                    { code: 'D6010', description: 'Surgical placement of implant body', timeframe: '3-6 months prior for osseointegration', critical: true }
+                ],
+                mustBeTogether: [],
+                cannotBeTogether: [
+                    { code: 'D6010', reason: 'Typically cannot place abutment same day as implant - requires healing period' }
+                ],
+                nextProcedures: [
+                    { code: 'D6058', description: 'Abutment supported crown', timeframe: 'Same day or within weeks' }
+                ],
+                clinicalGuidelines: [
+                    'Requires healed, integrated implant (3-6 months post-placement)',
+                    'Some immediate abutment protocols exist but uncommon',
+                    'Abutment must be placed before or with crown',
+                    'Radiographic verification of integration required',
+                    'Cannot bill crown without abutment'
+                ]
+            }
+        };
+
+        function resetSearch() {
+            document.getElementById('inputSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.remove('active');
+            document.getElementById('codeInput').value = '';
+            document.getElementById('alertMessage').classList.remove('show');
+            document.getElementById('codeInput').focus();
+        }
+
+        // ========== PATIENT HISTORY FUNCTIONS ==========
+
+        let historyEntryCount = 0;
+
+        function addHistoryEntry() {
+            historyEntryCount++;
+            const tbody = document.getElementById('historyTableBody');
+            const tr = document.createElement('tr');
+            tr.id = `history-row-${historyEntryCount}`;
+            tr.innerHTML = `
+                <td><input type="text" class="history-code" placeholder="e.g. D6010" style="text-transform:uppercase;"></td>
+                <td><input type="text" class="history-date" placeholder="e.g. 2026-03-15"></td>
+                <td><input type="text" class="history-desc" placeholder="Procedure description"></td>
+                <td><button class="btn btn-small btn-secondary" onclick="removeHistoryEntry(${historyEntryCount})" style="background:#e74c3c;color:white;border:none;">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function removeHistoryEntry(id) {
+            const row = document.getElementById(`history-row-${id}`);
+            if (row) row.remove();
+        }
+
+        function clearHistory() {
+            document.getElementById('historyTableBody').innerHTML = '';
+        }
+
+        function getHistoryEntries() {
+            const rows = document.querySelectorAll('#historyTableBody tr');
+            const entries = [];
+            rows.forEach(row => {
+                const codeInput = row.querySelector('.history-code');
+                const dateInput = row.querySelector('.history-date');
+                const descInput = row.querySelector('.history-desc');
+                if (codeInput && codeInput.value.trim()) {
+                    entries.push({
+                        code: codeInput.value.trim().toUpperCase(),
+                        date: dateInput ? dateInput.value.trim() : '',
+                        description: descInput ? descInput.value.trim() : ''
+                    });
+                }
+            });
+            return entries;
+        }
+
+        function checkHistory(historyEntries, codeData) {
+            const requiredResults = [];
+            let allCriticalMet = true;
+            let missingCritical = [];
+
+            // Check required history
+            codeData.requiredHistory.forEach(req => {
+                const reqCodes = req.code.split('/').map(c => c.trim().toUpperCase());
+                const matched = historyEntries.some(entry => reqCodes.includes(entry.code));
+
+                requiredResults.push({
+                    required: req,
+                    matched: matched,
+                    isCritical: req.critical
+                });
+
+                if (req.critical && !matched) {
+                    allCriticalMet = false;
+                    missingCritical.push(req);
+                }
+            });
+
+            // Check conflicts: does entered history conflict with current code?
+            const conflicts = [];
+            historyEntries.forEach(entry => {
+                // Check cannotBeTogether rules
+                codeData.cannotBeTogether.forEach(conflict => {
+                    const conflictCodes = conflict.code.split('/').map(c => c.trim().toUpperCase());
+                    if (conflictCodes.includes(entry.code)) {
+                        // Don't add duplicate conflicts
+                        if (!conflicts.some(c => c.code === conflict.code)) {
+                            conflicts.push({
+                                code: conflict.code,
+                                reason: conflict.reason,
+                                sourceEntry: entry
+                            });
+                        }
+                    }
+                });
+            });
+
+            return { requiredResults, allCriticalMet, missingCritical, conflicts };
+        }
+
+        function renderApprovalStatus(code, codeData, historyCheck) {
+            const section = document.getElementById('approvalStatusSection');
+            const { requiredResults, allCriticalMet, missingCritical, conflicts } = historyCheck;
+
+            let statusClass, statusIcon, statusTitle, statusMessage;
+
+            // Priority 1: Conflicts found → DENIED
+            if (conflicts.length > 0) {
+                statusClass = 'denied';
+                statusIcon = '✕';
+                statusTitle = 'DENIED — CONFLICT DETECTED';
+                statusMessage = 'The patient history contains a procedure that conflicts with the requested code.';
+            }
+            // Priority 2: Critical required history missing → DENIED
+            else if (!allCriticalMet) {
+                statusClass = 'denied';
+                statusIcon = '✕';
+                statusTitle = 'DENIED';
+                statusMessage = 'Critical required prior procedures are missing from patient history.';
+            }
+            // Priority 3: All good → APPROVED (with possible warnings)
+            else if (codeData.requiredHistory.length === 0 && conflicts.length === 0) {
+                statusClass = 'approved';
+                statusIcon = '✓';
+                statusTitle = 'APPROVED';
+                statusMessage = 'No prior history conflicts. No prior history required.';
+            }
+            else if (requiredResults.filter(r => !r.matched).length === 0) {
+                statusClass = 'approved';
+                statusIcon = '✓';
+                statusTitle = 'APPROVED';
+                statusMessage = 'All required prior procedures are documented in patient history.';
+            }
+            else {
+                statusClass = 'approved';
+                statusIcon = '✓';
+                statusTitle = 'APPROVED';
+                statusMessage = 'Critical requirements met. Some non-critical recommendations not documented.';
+            }
+
+            let detailsHTML = '<div class="history-check-details" style="margin-top:20px;">';
+
+            // Show conflicts first (most important)
+            if (conflicts.length > 0) {
+                detailsHTML += '<h4 style="font-size:14px;font-weight:600;color:#c0392b;margin-bottom:12px;">🚫 CONFLICTS DETECTED</h4>';
+                conflicts.forEach(c => {
+                    detailsHTML += `
+                        <div class="rule-card error">
+                            <div class="rule-title">❌ ${c.code} — Conflicting procedure in history</div>
+                            <div class="rule-description">${c.reason}</div>
+                        </div>
+                    `;
+                });
+                detailsHTML += '<br>';
+            }
+
+            // Show required history check results
+            if (codeData.requiredHistory.length > 0) {
+                detailsHTML += '<h4 style="font-size:14px;font-weight:600;color:#2c3e50;margin-bottom:12px;">Required Prior Procedures Check</h4>';
+                requiredResults.forEach(r => {
+                    const status = r.matched ? '✅' : (r.isCritical ? '❌' : '⚠️');
+                    const criticalLabel = r.isCritical ? ' <span class="verification-status status-fail">CRITICAL</span>' : ' <span class="verification-status status-warning">RECOMMENDED</span>';
+                    detailsHTML += `
+                        <div class="rule-card ${r.matched ? 'success' : (r.isCritical ? 'error' : 'warning')}">
+                            <div class="rule-title">${status} ${r.required.code} - ${r.required.description} ${criticalLabel}</div>
+                            <div class="rule-description">Timeframe: ${r.required.timeframe} | Status: ${r.matched ? 'Found in history' : 'Not found in history'}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                detailsHTML += '<div class="rule-card success"><div class="rule-title">📋 No Prior History Required</div><div class="rule-description">This procedure does not require any prior procedures in history.</div></div>';
+            }
+
+            detailsHTML += '</div>';
+
+            section.innerHTML = `
+                <div class="content-card">
+                    <div class="card-body">
+                        <div class="approval-status ${statusClass}">
+                            ${statusIcon} ${statusTitle}
+                        </div>
+                        <p style="font-size:14px;color:#5a6c7d;text-align:center;">${statusMessage}</p>
+                        ${detailsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== VERIFY FUNCTION (with history check) ==========
+
+        window.verifyCode = function() {
+            const code = document.getElementById('codeInput').value.trim().toUpperCase();
+            const alert = document.getElementById('alertMessage');
+
+            alert.classList.remove('show');
+
+            if (!code) {
+                alert.textContent = 'Please enter a code';
+                alert.classList.add('show');
+                return;
+            }
+
+            const codeData = dentalCodeRules[code];
+
+            if (!codeData) {
+                alert.textContent = `Code "${code}" not found in database. Available codes: D6058, D6010, D2740, D2950, D3330, D7140, D4341, D1110, D5110, D6056`;
+                alert.classList.add('show');
+                return;
+            }
+
+            // Hide input, show dashboard
+            document.getElementById('inputSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.add('active');
+
+            // Populate basic info
+            document.getElementById('displayCode').textContent = code;
+            document.getElementById('displayDescription').textContent = codeData.description;
+            document.getElementById('displayCategory').textContent = codeData.category;
+
+            // Populate Required History
+            const requiredHistoryDiv = document.getElementById('requiredHistory');
+            if (codeData.requiredHistory.length === 0) {
+                requiredHistoryDiv.innerHTML = '<div class="rule-card success"><div class="rule-title">✓ No Prior History Required</div><div class="rule-description">This procedure can be performed without prior procedure history.</div></div>';
+            } else {
+                let historyHTML = '';
+                codeData.requiredHistory.forEach(item => {
+                    const criticalBadge = item.critical ? '<span class="verification-status status-fail">CRITICAL</span>' : '<span class="verification-status status-warning">RECOMMENDED</span>';
+                    historyHTML += `
+                        <div class="rule-card ${item.critical ? 'error' : 'warning'}">
+                            <div class="rule-title">${item.code} - ${item.description} ${criticalBadge}</div>
+                            <div class="rule-description">Timeframe: ${item.timeframe}</div>
+                        </div>
+                    `;
+                });
+                requiredHistoryDiv.innerHTML = historyHTML;
+            }
+
+            // Populate Must Be Done Together
+            const mustBeTogetherDiv = document.getElementById('mustBeTogether');
+            if (codeData.mustBeTogether.length === 0) {
+                mustBeTogetherDiv.innerHTML = '<div class="rule-card success"><div class="rule-title">✓ No Bundling Requirements</div><div class="rule-description">This procedure does not require bundling with other codes.</div></div>';
+            } else {
+                let bundleHTML = '';
+                codeData.mustBeTogether.forEach(item => {
+                    const conditionalText = item.conditional ? ' (if applicable)' : ' (REQUIRED)';
+                    bundleHTML += `
+                        <div class="rule-card ${item.conditional ? 'warning' : 'error'}">
+                            <div class="rule-title">${item.code} - ${item.description}${conditionalText}</div>
+                            <div class="rule-description">${item.reason}</div>
+                        </div>
+                    `;
+                });
+                mustBeTogetherDiv.innerHTML = bundleHTML;
+            }
+
+            // Populate Cannot Be Done Together
+            const cannotBeTogetherDiv = document.getElementById('cannotBeTogether');
+            if (codeData.cannotBeTogether.length === 0) {
+                cannotBeTogetherDiv.innerHTML = '<div class="rule-card success"><div class="rule-title">✓ No Conflicting Procedures</div><div class="rule-description">No procedures conflict with this code.</div></div>';
+            } else {
+                let conflictHTML = '';
+                codeData.cannotBeTogether.forEach(item => {
+                    conflictHTML += `
+                        <div class="rule-card error">
+                            <div class="rule-title">⚠ ${item.code} <span class="verification-status status-fail">CONFLICT</span></div>
+                            <div class="rule-description">${item.reason}</div>
+                        </div>
+                    `;
+                });
+                cannotBeTogetherDiv.innerHTML = conflictHTML;
+            }
+
+            // Populate Next Procedures
+            const nextProceduresDiv = document.getElementById('nextProcedures');
+            if (codeData.nextProcedures.length === 0) {
+                nextProceduresDiv.innerHTML = '<div class="rule-card"><div class="rule-title">No Standard Follow-Up Procedures</div><div class="rule-description">This procedure typically does not have standard follow-up codes.</div></div>';
+            } else {
+                let nextHTML = '';
+                codeData.nextProcedures.forEach(item => {
+                    nextHTML += `
+                        <div class="rule-card">
+                            <div class="rule-title">${item.code} - ${item.description}</div>
+                            <div class="rule-description">Timeframe: ${item.timeframe}</div>
+                        </div>
+                    `;
+                });
+                nextProceduresDiv.innerHTML = nextHTML;
+            }
+
+            // Populate Clinical Guidelines
+            const guidelinesDiv = document.getElementById('clinicalGuidelines');
+            let guidelinesHTML = '<ul class="code-list">';
+            codeData.clinicalGuidelines.forEach(guideline => {
+                guidelinesHTML += `<li>• ${guideline}</li>`;
+            });
+            guidelinesHTML += '</ul>';
+            guidelinesDiv.innerHTML = guidelinesHTML;
+
+            // NEW: Check history against required procedures AND conflicts
+            const historyEntries = getHistoryEntries();
+            const historyCheck = checkHistory(historyEntries, codeData);
+            renderApprovalStatus(code, codeData, historyCheck);
+        };
+
+        // Add one empty history row on load so the table is visible
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('codeInput').focus();
+            addHistoryEntry();
+        });
+    </script>
+</body>
+</html>
